@@ -10,18 +10,23 @@ const Square = ({ value, onClick }: { value: string, onClick: Function }) =>
 const Board = () => {
     const game: string[][] = new Array(3);
 
-    for (let i = 0; i < 3; i++) {
-        game[i] = new Array(3);
+    const defaultBoard = (game: string[][]) => {
+        for (let i = 0; i < 3; i++) {
+            game[i] = new Array(3);
 
-        for (let j = 0; j < 3; j++) {
-            game[i][j] = ' ';
+            for (let j = 0; j < 3; j++) {
+                game[i][j] = ' ';
+            }
         }
     }
 
-    const [squares, setSquares] = useState(game);
+    defaultBoard(game);
+
+    const [squares, setSquares] = useState(game.slice());
     const [message, setMessaje] = useState('Next player: X');
     const [turn, setTurn] = useState('X');
     const [state, setState] = useState(State.ContinueGame);
+    const [typeGame, setTypeGame] = useState('player x');
 
     const actGame = (actTurn: string) => {
         let actMessage = message;
@@ -56,15 +61,27 @@ const Board = () => {
 
         let actState = actGame(turn);
 
-        if (actState == State.ContinueGame)
+        if (actState == State.ContinueGame && typeGame != '2 players')
             playComputer(turn == 'X' ? 'O' : 'X');
     }
 
-    const newGame = () => {
-        setSquares(game.slice());
-        setMessaje('Next player: X');
-        setTurn('X');
-        setState(State.ContinueGame);
+    const handleTypeGame = (event: React.ChangeEvent<HTMLSelectElement>) => {
+        newGame(event.target.value);
+        setTypeGame(event.target.value);
+    }
+
+    const newGame = (type: string) => {
+        defaultBoard(squares);
+
+        if (type == 'player o') {
+            playComputer('X');
+        }
+        else {
+            setSquares(squares.slice());
+            setMessaje('Next player: X');
+            setTurn('X');
+            setState(State.ContinueGame);
+        }
     }
 
     const renderSquare = (x: number, y: number) =>
@@ -88,8 +105,13 @@ const Board = () => {
                 {renderSquare(2, 1)}
                 {renderSquare(2, 2)}
             </div>
-            <div className="resetCont">
-                <button className="reset" onClick={() => newGame()}> New Game</button>
+            <div className="conf">
+                <button className="reset" onClick={() => newGame(typeGame)}> New Game</button>
+                <select className="type-game" onChange={handleTypeGame}>
+                    <option value='player x'>Player X</option>
+                    <option value='player o'>Player O</option>
+                    <option value='2 players'>2 Players</option>
+                </select>
             </div>
         </>
     )
