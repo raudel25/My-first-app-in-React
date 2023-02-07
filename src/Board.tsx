@@ -1,6 +1,7 @@
 import { useState } from "react";
 import './Board.css';
 import GameState, { State } from "./Rules";
+import ComputerGame from "./MiniMax";
 
 
 const Square = ({ value, onClick }: { value: string, onClick: Function }) =>
@@ -22,28 +23,41 @@ const Board = () => {
     const [turn, setTurn] = useState('X');
     const [state, setState] = useState(State.ContinueGame);
 
-    const handleClick = (x: number, y: number) => () => {
-        if (squares[x][y] != ' '||state!=State.ContinueGame) return;
-
-        squares[x][y] = turn;
-        setSquares(squares.slice());
-
-        let actTurn = turn;
+    const actGame = (actTurn: string) => {
         let actMessage = message;
         let actState = GameState(squares);
 
         if (actState == State.ContinueGame) {
-            actTurn = turn == 'X' ? 'O' : 'X';
+            actTurn = actTurn == 'X' ? 'O' : 'X';
             actMessage = message.substring(0, message.length - 1) + actTurn;
         } else {
-            if (actState == State.Win) actMessage = 'Player ' + turn + ' has won!';
+            if (actState == State.Win) actMessage = 'Player ' + actTurn + ' has won!';
             else actMessage = 'End game: Draw!';
         }
 
+        setSquares(squares.slice());
         setState(actState)
         setMessaje(actMessage);
         setState(GameState(squares));
         setTurn(actTurn);
+
+        return actState;
+    }
+
+    const playComputer = (player: string) => {
+        ComputerGame(squares, player);
+        actGame(player);
+    }
+
+    const handleClick = (x: number, y: number) => () => {
+        if (squares[x][y] != ' ' || state != State.ContinueGame) return;
+
+        squares[x][y] = turn;
+
+        let actState = actGame(turn);
+
+        if (actState == State.ContinueGame)
+            playComputer(turn == 'X' ? 'O' : 'X');
     }
 
     const newGame = () => {
