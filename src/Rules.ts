@@ -4,6 +4,11 @@ export enum State {
     EndGame,
 }
 
+export enum Turn {
+    X,
+    O,
+}
+
 function GameState(board: string[][]): State {
     let game = Rows(board);
     if (game != State.ContinueGame) return game;

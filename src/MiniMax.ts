@@ -1,15 +1,15 @@
-import GameState, { State } from "./Rules";
+import GameState, { State, Turn } from "./Rules";
 
-export default function ComputerGame(board: string[][], player: string) {
-    let funcPlayer = player == 'X' ? GamerO : GamerX;
+export default function ComputerGame(board: string[][], turn: Turn) {
+    let funcPlayer = turn == Turn.X ? GamerO : GamerX;
     let possible: [number, number][] = []
-    let cond = player == 'X' ? (a: number, b: number) => a > b : (a: number, b: number) => a < b;
-    let minimax = player == 'X' ? -10 : 10;
+    let cond = turn == Turn.X ? (a: number, b: number) => a > b : (a: number, b: number) => a < b;
+    let minimax = turn == Turn.X ? -10 : 10;
 
     for (let i = 0; i < board.length; i++) {
         for (let j = 0; j < board.length; j++) {
             if (board[i][j] == " ") {
-                board[i][j] = player;
+                board[i][j] = Turn.X == turn ? 'X' : 'O';
 
                 let aux = funcPlayer(board);
                 if (cond(aux, minimax)) {
@@ -24,7 +24,7 @@ export default function ComputerGame(board: string[][], player: string) {
     }
 
     let play = possible[Math.floor(Math.random() * possible.length)];
-    board[play[0]][play[1]] = player;
+    board[play[0]][play[1]] = Turn.X == turn ? 'X' : 'O';
 }
 
 function GamerX(board: string[][]): number {
