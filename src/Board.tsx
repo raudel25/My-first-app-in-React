@@ -1,20 +1,20 @@
-import { State, Turn } from "./Rules";
+import { valueGameToString, ValueGame } from "./Rules";
 
 const Square = ({ value, onClick }: { value: string, onClick: Function }) =>
     <button className="square" onClick={() => onClick()}>{value}</button>
 
-const Board = ({ squares, state, turn, actGame }: { squares: string[][], state: State, turn: Turn, actGame: Function }) => {
+const Board = ({ squares, turn, actGame }: { squares: ValueGame[][], turn: ValueGame, actGame: Function }) => {
 
     const handleClick = (x: number, y: number) => () => {
-        if (squares[x][y] != ' ' || state != State.ContinueGame) return;
+        if (squares[x][y] != ValueGame._) return;
 
-        squares[x][y] = turn == Turn.X ? 'X' : 'O';
+        squares[x][y] = turn;
 
         actGame();
     }
 
     const renderSquare = (x: number, y: number) =>
-        <Square value={squares[x][y]} onClick={handleClick(x, y)} />
+        <Square value={valueGameToString(squares[x][y])} onClick={handleClick(x, y)} />
 
     return (
         <>
@@ -34,7 +34,7 @@ const Board = ({ squares, state, turn, actGame }: { squares: string[][], state: 
                 {renderSquare(2, 2)}
             </div>
         </>
-    )
+    );
 }
 
 export default Board;

@@ -1,36 +1,35 @@
 import { useState } from "react";
-import GameState, { Turn, State } from "./Rules";
+import GameState, { ValueGame, State, valueGameToString } from "./Rules";
 import Board from "./Board";
 import './Game.css';
 import ComputerGame from "./MiniMax";
 
 const Game = () => {
-    const game: string[][] = new Array(3);
+    const game: ValueGame[][] = new Array(3);
 
     for (let i = 0; i < 3; i++) {
         game[i] = new Array(3);
 
         for (let j = 0; j < 3; j++) {
-            game[i][j] = ' ';
+            game[i][j] = ValueGame._;
         }
     }
 
     const [squares, setSquares] = useState(game.slice());
     const [message, setMessaje] = useState('Next player: X');
-    const [turn, setTurn] = useState(Turn.X);
+    const [turn, setTurn] = useState(ValueGame.X);
     const [state, setState] = useState(State.ContinueGame);
-    const [computerPlay, setComputerPlay] = useState(true);
-    const [computerTurn, setComputerTurn] = useState(Turn.O);
-
-    const valueGameToString = (value: Turn) => value == Turn.X ? 'X' : 'O';
+    const [computerTurn, setComputerTurn] = useState(ValueGame.O);
 
     const actGame = () => {
+        if (state != State.ContinueGame) return;
+
         let actMessage = message;
         let actState = GameState(squares);
         let actTurn = turn;
 
         if (actState == State.ContinueGame) {
-            actTurn = actTurn == Turn.X ? Turn.O : Turn.X;
+            actTurn = actTurn == ValueGame.X ? ValueGame.O : ValueGame.X;
             actMessage = message.substring(0, message.length - 1) + valueGameToString(actTurn);
         } else {
             if (actState == State.Win) actMessage = 'Player ' + valueGameToString(actTurn) + ' has won!';
@@ -45,7 +44,7 @@ const Game = () => {
     }
 
     const playComputer = () => {
-        if (state == State.ContinueGame && computerTurn == turn && computerPlay) {
+        if (state == State.ContinueGame && computerTurn == turn) {
             ComputerGame(squares, computerTurn);
             actGame();
         }
@@ -54,7 +53,7 @@ const Game = () => {
     const newGame = () => {
         setSquares(game.slice());
         setMessaje('Next player: X');
-        setTurn(Turn.X);
+        setTurn(ValueGame.X);
         setState(State.ContinueGame);
     }
 
@@ -62,12 +61,10 @@ const Game = () => {
         newGame();
 
         if (event.target.value == '2')
-            setComputerPlay(false);
+            setComputerTurn(ValueGame._);
         else {
-            setComputerPlay(true);
-
-            if (event.target.value == 'x') setComputerTurn(Turn.O);
-            else setComputerTurn(Turn.X);
+            if (event.target.value == 'x') setComputerTurn(ValueGame.O);
+            else setComputerTurn(ValueGame.X);
         }
     }
 
@@ -76,7 +73,7 @@ const Game = () => {
     return (
         <>
             <h1>{message}</h1>
-            <Board squares={squares} turn={turn} state={state} actGame={actGame} />
+            <Board squares={squares} turn={turn} actGame={actGame} />
             <div className="conf">
                 <button className="reset" onClick={() => newGame()}> New Game</button>
                 <select className="type-game" onChange={handleTypeGame}>

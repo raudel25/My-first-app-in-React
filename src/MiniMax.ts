@@ -1,15 +1,15 @@
-import GameState, { State, Turn } from "./Rules";
+import GameState, { State, ValueGame } from "./Rules";
 
-export default function ComputerGame(board: string[][], turn: Turn) {
-    let funcPlayer = turn == Turn.X ? GamerO : GamerX;
+export default function ComputerGame(board: ValueGame[][], turn: ValueGame) {
+    let funcPlayer = turn == ValueGame.X ? GamerO : GamerX;
     let possible: [number, number][] = []
-    let cond = turn == Turn.X ? (a: number, b: number) => a > b : (a: number, b: number) => a < b;
-    let minimax = turn == Turn.X ? -10 : 10;
+    let cond = turn == ValueGame.X ? (a: number, b: number) => a > b : (a: number, b: number) => a < b;
+    let minimax = turn == ValueGame.X ? -10 : 10;
 
     for (let i = 0; i < board.length; i++) {
         for (let j = 0; j < board.length; j++) {
-            if (board[i][j] == " ") {
-                board[i][j] = Turn.X == turn ? 'X' : 'O';
+            if (board[i][j] == ValueGame._) {
+                board[i][j] = turn;
 
                 let aux = funcPlayer(board);
                 if (cond(aux, minimax)) {
@@ -18,26 +18,26 @@ export default function ComputerGame(board: string[][], turn: Turn) {
                 }
                 if (aux == minimax) possible.push([i, j]);
 
-                board[i][j] = " ";
+                board[i][j] = ValueGame._;
             }
         }
     }
 
     let play = possible[Math.floor(Math.random() * possible.length)];
-    board[play[0]][play[1]] = Turn.X == turn ? 'X' : 'O';
+    board[play[0]][play[1]] = turn;
 }
 
-function GamerX(board: string[][]): number {
+function GamerX(board: ValueGame[][]): number {
     let game = GameState(board);
     if (game == State.Win) return -1;
     if (game == State.EndGame) return 0;
     let minmax = -10;
     for (let i = 0; i < board.length; i++) {
         for (let j = 0; j < board.length; j++) {
-            if (board[i][j] == " ") {
-                board[i][j] = "X";
+            if (board[i][j] == ValueGame._) {
+                board[i][j] = ValueGame.X;
                 minmax = Math.max(minmax, GamerO(board));
-                board[i][j] = " ";
+                board[i][j] = ValueGame._;
                 if (minmax == 1) return 1;
             }
         }
@@ -46,17 +46,17 @@ function GamerX(board: string[][]): number {
     return minmax;
 }
 
-function GamerO(board: string[][]): number {
+function GamerO(board: ValueGame[][]): number {
     let game = GameState(board);
     if (game == State.Win) return 1;
     if (game == State.EndGame) return 0;
     let minmax = 10;
     for (let i = 0; i < board.length; i++) {
         for (let j = 0; j < board.length; j++) {
-            if (board[i][j] == " ") {
-                board[i][j] = "O";
+            if (board[i][j] == ValueGame._) {
+                board[i][j] = ValueGame.O;
                 minmax = Math.min(minmax, GamerX(board));
-                board[i][j] = " ";
+                board[i][j] = ValueGame._;
                 if (minmax == -1) return -1;
             }
         }
