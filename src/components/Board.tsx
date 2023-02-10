@@ -1,4 +1,4 @@
-import { valueGameToString, ValueGame } from "./Rules";
+import { valueGameToString, ValueGame } from "../logic/Rules";
 
 const Square = ({ value, onClick }: { value: string, onClick: Function }) =>
     <button className="square" onClick={() => onClick()}>{value}</button>
