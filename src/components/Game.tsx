@@ -10,7 +10,7 @@ const Game = () => {
     const [computerTurn, setComputerTurn] = useState(ValueGame.O);
 
     const playComputer = () => {
-        if (state == State.ContinueGame && computerTurn == turn) {
+        if (state === State.ContinueGame && computerTurn === turn) {
             ComputerGame(squares, computerTurn);
             actGame();
         }
@@ -19,10 +19,10 @@ const Game = () => {
     const handleTypeGame = (event: React.ChangeEvent<HTMLSelectElement>) => {
         newGame();
 
-        if (event.target.value == '2')
+        if (event.target.value === '2')
             setComputerTurn(ValueGame._);
         else {
-            if (event.target.value == 'x') setComputerTurn(ValueGame.O);
+            if (event.target.value === 'x') setComputerTurn(ValueGame.O);
             else setComputerTurn(ValueGame.X);
         }
     }

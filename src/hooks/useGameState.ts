@@ -18,17 +18,17 @@ export const useGameState = () => {
     const [state, setState] = useState(State.ContinueGame);
 
     const actGame = () => {
-        if (state != State.ContinueGame) return;
+        if (state !== State.ContinueGame) return;
 
         let actMessage = message;
         let actState = GameState(squares);
         let actTurn = turn;
 
-        if (actState == State.ContinueGame) {
-            actTurn = actTurn == ValueGame.X ? ValueGame.O : ValueGame.X;
+        if (actState === State.ContinueGame) {
+            actTurn = actTurn === ValueGame.X ? ValueGame.O : ValueGame.X;
             actMessage = message.substring(0, message.length - 1) + valueGameToString(actTurn);
         } else {
-            if (actState == State.Win) actMessage = 'Player ' + valueGameToString(actTurn) + ' has won!';
+            if (actState === State.Win) actMessage = 'Player ' + valueGameToString(actTurn) + ' has won!';
             else actMessage = 'End game: Draw!';
         }
 
